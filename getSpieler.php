@@ -1,4 +1,6 @@
 <?php
+$SEASON = '__SEASON__';
+
 if (!isset($_GET['nummer'])) {
 	\header('HTTP/1.1 400 Bad Request');
 	echo 'Missing GET parameter nummer';
@@ -12,7 +14,7 @@ if (!\preg_match('/^[0-9]+$/', $nummer)) {
 	exit();
 }
 
-$fn = __DIR__ . '/cs_buli2016/players/' . \basename($nummer . '.xml');
+$fn = __DIR__ . '/' . $SEASON . '/players/' . \basename($nummer . '.xml');
 $xml = \file_get_contents($fn);
 
 if ($xml === false) {

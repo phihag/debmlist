@@ -1,4 +1,6 @@
 <?php
+$SEASON = '__SEASON__';
+
 if (!isset($_GET['liga'])) {
 	\header('HTTP/1.1 400 Bad Request');
 	echo 'Missing GET parameter liga';
@@ -12,7 +14,7 @@ if (!\preg_match('/^[0-9]+$/', $liga)) {
 	exit();
 }
 
-$fn = __DIR__ . '/cs_buli2016/clubs/' . \basename($liga . '.xml');
+$fn = __DIR__ . '/' . $SEASON . '/clubs/' . \basename($liga . '.xml');
 $xml = \file_get_contents($fn);
 
 if ($xml === false) {
