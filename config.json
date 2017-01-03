@@ -13,5 +13,12 @@
 		"league_key": "2BLS-2016"
 	}
 ],
-"key": "buli2016"
+"shortnames": {
+	"TSV Neuhausen-Nymphenburg": "Neuhausen"
+},
+"longnames": {
+	"TSV Neuhausen-Nymphenburg": "TSV Neuh.-Nymphenburg"
+},
+"key": "buli2016",
+"use_cache": true
 }
