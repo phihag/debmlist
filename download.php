@@ -1,14 +1,7 @@
 <?php
-
-\set_error_handler(function ($errno, $errstr, $errfile, $errline) {
-    throw new \ErrorException($errstr, 0, $errno, $errfile, $errline);
-});
-
-function _ensure_dir($fn) {
-	if (!\is_dir($fn)) {
-		\mkdir($fn);
-	}
-}
+namespace debmlist;
+require('utils.php');
+utils\setup_error_handler();
 
 function _make_url($page, $tournament_id, $suffix) {
 	return 'http://www.turnier.de/sport/' . $page . '.aspx?id=' . $tournament_id . $suffix;
@@ -27,7 +20,7 @@ function _download_html($url, $use_cache) {
 	}
 
 	$cache_dir = __DIR__ . '/cache';
-	_ensure_dir($cache_dir);
+	utils\ensure_dir($cache_dir);
 	$cache_fn = $cache_dir . '/' . \preg_replace('/[^a-z0-9\.]+/', '_', $url) . '.html';
 	if (\file_exists($cache_fn)) {
 		return \file_get_contents($cache_fn);
@@ -220,123 +213,8 @@ function download_league($url, $league_key, $use_cache) {
 	return $res;
 }
 
-function create_el($parent, $tagName, $text=false) {
-	$doc = $parent->ownerDocument;
-	$node = $doc->createElement($tagName);
-	if ($text !== false) {
-		$textNode = $doc->createTextNode($text);
-		$node->appendChild($textNode);
-	}
-	$parent->appendChild($node);
-	return $node;
-}
-
-function _transform_courtspot_php($config, $out_dir, $basename) {
-	$php_fn = __DIR__ . '/' . $basename;
-	$php_src = \file_get_contents($php_fn);
-	if (!$php_src) {
-		throw new \Exception('Cannot read CourtSpot source file');
-	}
-	$php_src = \str_replace('__SEASON__', $config['key'], $php_src);
-	if (!\file_put_contents($out_dir . '/courtspot/' . $basename, $php_src)) {
-		throw new \Exception('Cannot write CourtSpot source file');
-	}
-}
-
-function gen_courtspot_players($config, $out_dir, $leagues) {
-	_ensure_dir($out_dir . '/courtspot');
-	_ensure_dir($out_dir . '/courtspot/' . $config['key']);
-	$basedir = $out_dir . '/courtspot/' . $config['key'] . '/players/';
-	_ensure_dir($basedir);
-
-	foreach ($leagues as $l) {
-		foreach ($l['teams'] as $t) {
-			if (!\preg_match('/^[0-9]+$/', $t['id'])) {
-				throw new Exception('Invalid team id: ' . $t['id']);
-			}
-			$fn = $basedir . $t['id'] . '.xml';
-
-			$doc = new DOMDocument('1.0', 'UTF-8');
-			$root = $doc->createElement('DATEN');
-			$root = $doc->appendChild($root);
-
-			foreach ($t['players'] as $p) {
-				$pnode = create_el($root, 'Spieler');
-				create_el($pnode, 'mw', (($p['gender'] === 'm') ? 'm' : 'w'));
-				create_el($pnode, 'Vor', $p['firstname']);
-				create_el($pnode, 'Nach', $p['lastname']);
-				create_el($pnode, 'ranking', $p['ranking']);
-				if (isset($p['ranking_d'])) {
-					create_el($pnode, 'ranking_d', $p['ranking_d']);
-				}
-				if (isset($p['nationality'])) {
-					create_el($pnode, 'nationality', $p['nationality']);
-				}
-			}
-
-			\file_put_contents($fn, $doc->saveXML());
-		}
-	}
-
-	_transform_courtspot_php($config, $out_dir, 'getSpieler.php');
-}
-
-function _calc_shortname($config, $name) {
-	if (\array_key_exists($name, $config['shortnames'])) {
-		return $config['shortnames'][$name];
-	}
-
-	$parts = \preg_split('/[\s-]/', $name);
-	$longest_part = '';
-	foreach ($parts as $p) {
-		if (\strlen($p) > \strlen($longest_part)) {
-			$longest_part = $p;
-		}
-	}
-	return $longest_part;
-}
-
-function _calc_longname($config, $name) {
-	if (\array_key_exists($name, $config['longnames'])) {
-		return $config['longnames'][$name];
-	}
-	return $name;
-}
-
-function gen_courtspot_clubs($config, $out_dir, $leagues) {
-	_ensure_dir($out_dir . '/courtspot');
-	_ensure_dir($out_dir . '/courtspot/' . $config['key']);
-	$basedir = $out_dir . '/courtspot/' . $config['key'] . '/clubs/';
-	_ensure_dir($basedir);
-
-	foreach ($leagues as $l) {
-		if (!\preg_match('/^[0-9]+$/', $l['draw_id'])) {
-			throw new Exception('Invalid league id: ' . $l['draw_id']);
-		}
-		$fn = $basedir . $l['draw_id'] . '.xml';
-
-		$doc = new DOMDocument('1.0', 'UTF-8');
-		$root = $doc->createElement('DATEN');
-		$root = $doc->appendChild($root);
-
-		foreach ($l['teams'] as $t) {
-			$tnode = create_el($root, 'Verein');
-			create_el($tnode, 'Nummer', $t['id']);
-			create_el($tnode, 'Lang', _calc_longname($config, $t['name']));
-			create_el($tnode, 'Kurz', _calc_shortname($config, $t['name']));
-		}
-		\file_put_contents($fn, $doc->saveXML());
-	}
-
-	_transform_courtspot_php($config, $out_dir, 'getVereine.php');
-}
-
 function main() {
-	$config_json = \file_get_contents(__DIR__ . '/config.json');
-	$config = \json_decode($config_json, true);
-	if(!$config) {
-		throw new \Exception('Invalid configuration JSON');
-	}
+	$config = utils\read_config();
 	$use_cache = $config['use_cache'];
 
 	$leagues = [];
@@ -345,14 +223,11 @@ function main() {
 	}
 
 	$out_dir = __DIR__ . '/output/';
-	_ensure_dir($out_dir);
+	utils\ensure_dir($out_dir);
 	$out_fn = $out_dir . $config['key'] . '.json';
 	$out_json = \json_encode($leagues, \JSON_PRETTY_PRINT);
 	\file_put_contents($out_fn, $out_json);
 	echo 'Wrote to ' . $out_fn . "\n";
-
-	gen_courtspot_players($config, $out_dir, $leagues);
-	gen_courtspot_clubs($config, $out_dir, $leagues);
 }
 
 main();

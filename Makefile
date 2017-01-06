@@ -1,5 +1,10 @@
-all:
+all: download courtspot
+
+download:
 	php download.php
+
+courtspot: download
+	php gen_courtspot.php
 
 clean:
 	rm -rf output
@@ -7,4 +12,4 @@ clean:
 cleanall: clean
 	rm -rf cache
 
-.PHONY: all clean cleanall
+.PHONY: all clean cleanall courtspot download
