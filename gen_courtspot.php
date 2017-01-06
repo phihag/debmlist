@@ -120,6 +120,51 @@ function calc_ids($config, &$leagues) {
 	}
 }
 
+function gen_matches($config, $out_dir, $leagues) {
+	$matches = [];
+	$lines = [];
+	foreach ($leagues as $l) {
+		$teams_by_id = [];
+		foreach ($l['teams'] as $t) {
+			$teams_by_id[$t['id']] = $t;
+		}
+
+		$last_day = -1;
+		foreach ($l['matches'] as $m) {
+			$team_names = \array_map(function($team_id) use ($teams_by_id) {
+				return $teams_by_id[$team_id]['cs_shortname'];
+			}, $m['team_ids']);
+			if ($last_day !== $m['matchday']) {
+				if (\count($lines) > 0) {
+					$lines[] = '';
+				}
+				$last_day = $m['matchday'];
+			}
+			$lines[] = (
+				$l['draw_id'] . ',' . $m['date'] . ',' . $m['starttime'] . ',' . $m['matchday'] . ',' .
+				$team_names[0] . ',' . $team_names[1]);
+			$matches[] = [
+				'league_id' => $l['draw_id'],
+				'date' => $m['date'],
+				'starttime' => $m['starttime'],
+				'matchday' => $m['matchday'],
+				'home_team_shortname' => $team_names[0],
+				'away_team_shortname' => $team_names[1],
+			];
+		}
+	}
+	$lines[] = '';
+	$lines[] = '';
+
+	$txt_fn = $out_dir . '/courtspot/' . $config['key'] . '/begegnungen.txt';
+	$s = \implode("\n", $lines);
+	\file_put_contents($txt_fn, $s);
+
+	$json_fn = $out_dir . '/courtspot/' . $config['key'] . '/begegnungen.json';
+	$json_s = \json_encode($matches, \JSON_PRETTY_PRINT);
+	\file_put_contents($json_fn, $json_s);
+}
+
 function main() {
 	$config = utils\read_config();
 
@@ -137,6 +182,7 @@ function main() {
 
 	gen_players($config, $out_dir, $leagues);
 	gen_clubs($config, $out_dir, $leagues);
+	gen_matches($config, $out_dir, $leagues);
 
 	transform_php($config, $out_dir, 'getSpieler.php');
 	transform_php($config, $out_dir, 'getVereine.php');
