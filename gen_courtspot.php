@@ -165,6 +165,28 @@ function gen_matches($config, $out_dir, $leagues) {
 	\file_put_contents($json_fn, $json_s);
 }
 
+function make_zip($config, $out_dir) {
+	if (! \preg_match('/^[0-9a-z]+$/', $config['key'])) {
+		throw new \Exception('Invalid config key');
+	}
+
+	$zip_fn = \realpath($out_dir) . '/' . 'courtspot.zip';
+	$cmd = [
+		'zip',
+		'-r',
+		$zip_fn,
+		$config['key'],
+		'getVereine.php',
+		'getSpieler.php',
+		'begegnungen.txt',
+		'begegnungen.json',
+	];
+
+	$cmdline = \implode(' ', \array_map('escapeshellarg', $cmd));
+	\exec('cd ' . \escapeshellarg($out_dir . '/courtspot/') . ' && ' . $cmdline);
+	echo 'Wrote ' . $zip_fn . "\n";
+}
+
 function main() {
 	$config = utils\read_config();
 
@@ -186,6 +208,8 @@ function main() {
 
 	transform_php($config, $out_dir, 'getSpieler.php');
 	transform_php($config, $out_dir, 'getVereine.php');
+
+	make_zip($config, $out_dir);
 }
 
 main();
