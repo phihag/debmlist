@@ -170,7 +170,7 @@ function make_zip($config, $out_dir) {
 		throw new \Exception('Invalid config key');
 	}
 
-	$zip_fn = \realpath($out_dir) . '/' . 'courtspot.zip';
+	$zip_fn = \realpath($out_dir) . '/' . 'courtspot_' . $config['key'] . '_data.zip';
 	$cmd = [
 		'zip',
 		'-r',
