@@ -98,6 +98,7 @@ function gen_clubs($config, $out_dir, $leagues) {
 			create_el($tnode, 'Nummer', $t['cs_id']);
 			create_el($tnode, 'Lang', _calc_longname($config, $t['name']));
 			create_el($tnode, 'Kurz', $t['cs_shortname']);
+			create_el($tnode, 'turnier_id', $t['id']);
 		}
 		\file_put_contents($fn, $doc->saveXML());
 	}
