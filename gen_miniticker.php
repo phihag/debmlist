@@ -45,7 +45,6 @@ function main() {
 			$res_matches[] = $lmatch;
 		}
 	}
-
 	\usort($res_matches, function($m1, $m2) {
 		if ($m1['ts'] < $m2['ts']) {
 			return -1;
@@ -64,6 +63,25 @@ function main() {
 	$out_fn = $out_dir . 'miniticker_' . $config['key'] . '.json';
 	\file_put_contents($out_fn, \json_encode($res));
 	echo 'Wrote ' . $out_fn . "\n";
+
+	// Generate only current events
+	$now = \time();
+	$min_time = $now - 24 * 60 * 60;
+	$max_time = $now + 14 * 24 * 60 * 60;
+	$cur_matches = \array_filter($res_matches, function($m) use($min_time, $max_time) {
+		return ($m['ts'] >= $min_time) && ($m['ts'] <= $max_time);
+	});
+	foreach ($cur_matches as &$cm) {
+		$team1 = $res_teams[$cm['team_idxs'][0]];
+		$team2 = $res_teams[$cm['team_idxs'][1]];
+		$cm['team_names'] = [$team1['name'], $team2['name']];
+		$cm['all_players'] = [$team1['players'], $team2['players']];
+		unset($cm['team_ids']);
+		unset($cm['team_idxs']);
+	}
+	$cur_out_fn = $out_dir . 'miniticker_cur_' . $config['key'] . '.json';
+	\file_put_contents($cur_out_fn, \json_encode($cur_matches));
+	echo 'Wrote ' . $cur_out_fn . "\n";
 }
 
 main();
