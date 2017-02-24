@@ -33,9 +33,13 @@ function main() {
 				}
 				$match_tidxs[] = $team_indices[$tid];
 			}
-
-			$lmatch['league_key'] = $league['league_key'];
 			$lmatch['team_idxs'] = $match_tidxs;
+
+			$team1 = $res_teams[$match_tidxs[0]];
+			$team2 = $res_teams[$match_tidxs[1]];
+
+			$lmatch['id'] = 'mt_' . $league['league_key'] . '_' . $lmatch['date'] . '_' . $team1['name'] . '-' . $team2['name'];
+			$lmatch['league_key'] = $league['league_key'];
 			$tstr = $lmatch['date'] . ' ' . $lmatch['starttime'] . ':00';
 			$FORMAT = 'd.m.Y H:i:s';
 			$dt = \DateTime::createFromFormat($FORMAT, $tstr, $tz);
@@ -56,6 +60,14 @@ function main() {
 		return 0;
 	});
 
+	foreach ($res_teams as &$t) {
+		foreach ($t['players'] as &$p) {
+			$p['name'] = $p['firstname'] . ' ' . $p['lastname'];
+			unset($p['firstname']);
+			unset($p['lastname']);
+		}
+	}
+
 	$res = [
 		'matches' => $res_matches,
 		'teams' => $res_teams,
@@ -69,9 +81,9 @@ function main() {
 	$now = \time();
 	$min_time = $now - 24 * 60 * 60;
 	$max_time = $now + 14 * 24 * 60 * 60;
-	$cur_matches = \array_filter($res_matches, function($m) use($min_time, $max_time) {
+	$cur_matches = \array_values(\array_filter($res_matches, function($m) use($min_time, $max_time) {
 		return ($m['ts'] >= $min_time) && ($m['ts'] <= $max_time);
-	});
+	}));
 	foreach ($cur_matches as &$cm) {
 		$team1 = $res_teams[$cm['team_idxs'][0]];
 		$team2 = $res_teams[$cm['team_idxs'][1]];
