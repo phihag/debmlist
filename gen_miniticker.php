@@ -34,6 +34,7 @@ function main() {
 				$match_tidxs[] = $team_indices[$tid];
 			}
 
+			$lmatch['league_key'] = $league['league_key'];
 			$lmatch['team_idxs'] = $match_tidxs;
 			$tstr = $lmatch['date'] . ' ' . $lmatch['starttime'] . ':00';
 			$FORMAT = 'd.m.Y H:i:s';
