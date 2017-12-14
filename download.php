@@ -3,109 +3,32 @@ namespace debmlist;
 require('utils.php');
 utils\setup_error_handler();
 
+// If the following code fails, check out but at the correct location
+if (\is_dir('../bup/')) {
+	$BUP_LOCATION = '../bup/';
+} elseif (\is_dir('./bup')) {
+	$BUP_LOCATION = './bup/';
+} else {
+	throw new \Exception('Cannot find bup! Run make bup to install it.');
+}
+require($BUP_LOCATION . 'http_proxy/http_utils.php');
+require($BUP_LOCATION . 'http_proxy/tde_utils.php');
+
+
 function _make_url($page, $tournament_id, $suffix) {
-	return 'http://www.turnier.de/sport/' . $page . '.aspx?id=' . $tournament_id . $suffix;
+	return 'https://www.turnier.de/sport/' . $page . '.aspx?id=' . $tournament_id . $suffix;
 }
 
-function _strip_crap($name) {
-	if (\preg_match('/^(?P<real_name>.*?)\s+\[[A-Z0-9]+\]\s*$/', $name, $m)) {
-		return $m['real_name'];
+function download_team($httpc, $tournament_id, $team_id, $team_name, $use_vrl) {
+	if ($use_vrl) {
+		return buli_download_all_players(
+			$httpc, $league_key, 'www.turnier.de', $season_id, $draw_id, $match_id, $team_infos);
+	} else {
+		throw new \Exception('Non-Bundesliga support not implemented yet!');
 	}
-	return $name;
 }
 
-function _download_html($url, $use_cache) {
-	if (!$use_cache) {
-		return \file_get_contents($url);
-	}
-
-	$cache_dir = __DIR__ . '/cache';
-	utils\ensure_dir($cache_dir);
-	$cache_fn = $cache_dir . '/' . \preg_replace('/[^a-z0-9\.]+/', '_', $url) . '.html';
-	if (\file_exists($cache_fn)) {
-		return \file_get_contents($cache_fn);
-	}
-	$res = \file_get_contents($url);
-	\file_put_contents($cache_fn, $res);
-	return $res;
-}
-
-function _parse_players($players_html, $gender) {
-	if (\preg_match_all('/
-		<tr>\s*
-		<td>(?P<teamnum>[0-9]+)-(?P<ranking>[0-9]+)(?:-D(?P<ranking_d>[0-9]+))?<\/td>
-		<td><\/td>\s*
-		<td\s+id="playercell"><a\s+href="player\.aspx[^"]+">
-			(?P<lastname>[^<]+),\s*(?P<firstname>[^<]+)
-		<\/a><\/td>\s*
-		<td\s+class="flagcell">(?:
-			<img[^>]+\/><span\s*class="printonly\s*flag">\[(?P<nationality>[A-Z]{2,})\]\s*<\/span>
-		)?
-		<\/td>\s*
-		<td>(?P<player_id>[0-9-]+)<\/td>\s*
-		<td>(?P<birthyear>[0-9]{4})?<\/td>
-		/xs', $players_html, $players_m, \PREG_SET_ORDER) === false) {
-		throw new \Exception('Failed to match players');
-	}
-
-	$res = \array_map(function($m) use ($gender) {
-		$p = [
-			'ranking' => \intval($m['ranking']),
-			'firstname' => $m['firstname'],
-			'lastname' => $m['lastname'],
-			'player_id' => $m['player_id'],
-			'gender' => $gender,
-		];
-		if ($m['ranking_d']) {
-			$p['ranking_d'] = \intval($m['ranking_d']);
-		}
-		if ($m['nationality']) {
-			$p['nationality'] = $m['nationality'];
-		}
-		return $p;
-	}, $players_m);
-
-	if (\count($res) < 1) {
-		die($players_html);
-	}
-	return $res;
-}
-
-function download_team($tournament_id, $team_id, $team_name, $use_cache) {
-	$players_url = _make_url('teamrankingplayers', $tournament_id, '&tid=' . $team_id);
-	$players_html = _download_html($players_url, $use_cache);
-
-	if (!\preg_match(
-			'/<table\s+class="ruler">\s*<caption>\s*Herren(?P<tbody>.*?)<\/table>/s',
-			$players_html, $players_m_m)) {
-		throw new \Exception('Cannot find male players in ' . $players_url);
-	}
-	$male_players = _parse_players($players_m_m['tbody'], 'm');
-	if (\count($male_players) === 0) {
-		throw new \Exception('Could not find any male players in ' . $players_url);
-	}
-
-	if (!\preg_match(
-			'/<table\s+class="ruler">\s*<caption>\s*Damen(?P<tbody>.*?)<\/table>/s',
-			$players_html, $players_f_m)) {
-		throw new \Exception('Cannot find male players in ' . $players_url);
-	}
-	$female_players = _parse_players($players_f_m['tbody'], 'f');
-	if (\count($female_players) === 0) {
-		throw new \Exception('Could not find any female players in ' . $players_url);
-	}
-
-
-	$players = \array_merge([], $male_players, $female_players);
-
-	return [
-		'id' => $team_id,
-		'name' => $team_name,
-		'players' => $players,
-	];
-}
-
-function download_league($url, $league_key, $use_cache) {
+function download_league($httpc, $url, $league_key, $use_vrl, $use_hr) {
 	$m = \preg_match('/https?:\/\/www\.turnier\.de\/sport\/[a-z0-9_]+\.aspx\?id=(?P<id>[0-9A-F-]+)&draw=(?P<draw>[0-9]+)/', $url, $groups);
 	if (!$m) {
 		throw new \Exception('Cannot parse URL ' . $url);
@@ -114,12 +37,14 @@ function download_league($url, $league_key, $use_cache) {
 	$draw = $groups['draw'];
 
 	$teams_url = _make_url('draw', $tournament_id, '&draw=' . $draw);
-	$teams_html = _download_html($teams_url, $use_cache);
+	$teams_html = $httpc->request($teams_url);
 
-	if (!\preg_match('/<th>Konkurrenz:<\/th>\s*<td><a[^>]+>(?P<name>[^<]*)<\/a><\/td>/s', $teams_html, $name_m)) {
-		throw new \Exception('Cannot find name in ' . $team_url);
+	if (!\preg_match('/
+			<div\s*class="title">\s*<h3>\s*(?P<name>[^<(]+)
+			/xs', $teams_html, $header_m)) {
+		throw new \Exception('Cannot find league name!');
 	}
-	$league_name = \html_entity_decode($name_m['name']);
+	$league_name = \html_entity_decode($header_m['name']);
 
 	if (!\preg_match('/<table\s+class="ruler">(?P<html>.+?)<\/table>/s', $teams_html, $team_table_m)) {
 		throw new \Exception('Cannot find table in ' . $team_url);
@@ -134,7 +59,7 @@ function download_league($url, $league_key, $use_cache) {
 	}
 	$teams = \array_map(function($m) {
 		return [
-			'name' => _strip_crap($m['name']),
+			'name' => unify_team_name($m['name']),
 			'team_id' => $m['team_id'],
 		];
 	}, $team_name_m);
@@ -144,7 +69,7 @@ function download_league($url, $league_key, $use_cache) {
 	}
 
 	$matches_url = _make_url('drawmatches', $tournament_id, '&draw=' . $draw);
-	$matches_html = _download_html($matches_url, $use_cache);
+	$matches_html = $httpc->request($matches_url);
 
 	if (!\preg_match('/<table\s+class="ruler matches">(?P<html>.+?)<\/table>/s', $matches_html, $table_m)) {
 		throw new \Exception('Cannot find table in ' . $matches_url);
@@ -176,12 +101,12 @@ function download_league($url, $league_key, $use_cache) {
 
 	$tms = [];
 	foreach ($matches_m as $m) {
-		$team1_name = _strip_crap($m['name1']);
+		$team1_name = unify_team_name($m['name1']);
 		$team1 = $teams_by_name[$team1_name];
 		if (!$team1) {
 			throw new Exception('Cannot find team ' . $team1_name);
 		}
-		$team2_name = _strip_crap($m['name2']);
+		$team2_name = unify_team_name($m['name2']);
 		$team2 = $teams_by_name[$team2_name];
 		if (!$team2) {
 			throw new Exception('Cannot find team ' . $team2_name);
@@ -198,8 +123,19 @@ function download_league($url, $league_key, $use_cache) {
 		];
 	}
 
-	$teams_info = \array_map(function($t) use ($tournament_id, $use_cache) {
-		return download_team($tournament_id, $t['team_id'], $t['name'], $use_cache);
+	if (!$use_vrl) {
+		throw new \Exception('non-VRL download not implemented yet.');
+	}
+
+	$teams_info = \array_map(function($t) use ($httpc, $tournament_id, $league_key, $use_hr) {
+		$all_players = download_team_vrl(
+			$httpc, 'www.turnier.de', $tournament_id, $league_key, $t['team_id'], $use_hr);
+
+		return [
+			'id' => $t['team_id'],
+			'name' => $t['name'],
+			'players' => $all_players,
+		];
 	}, $teams);
 
 	$res = [
@@ -215,11 +151,14 @@ function download_league($url, $league_key, $use_cache) {
 
 function main() {
 	$config = utils\read_config();
-	$use_cache = $config['use_cache'];
+	$httpc = \AbstractHTTPClient::make();
+	if ($config['use_cache']) {
+		$httpc = new \CacheHTTPClient($httpc, __DIR__ . '/cache');
+	}
 
 	$leagues = [];
 	foreach ($config['leagues'] as $l) {
-		$leagues[] = download_league($l['url'], $l['league_key'], $use_cache);
+		$leagues[] = download_league($httpc, $l['url'], $l['league_key'], $l['use_vrl'], $l['use_hr']);
 	}
 
 	$out_dir = __DIR__ . '/output/';

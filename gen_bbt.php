@@ -38,7 +38,7 @@ function main() {
 			$rmatch = [
 				'type' => 'auto',
 				'team_names' => [$teams[0]['name'], $teams[1]['name']],
-				'league_key' => $teams[0]['name'],
+				'league_key' => $league['league_key'],
 				'starttime' => $lmatch['starttime'],
 				'date' => $dt->format('Y-m-d'),
 				'date_de' => $lmatch['date'],
