@@ -1,5 +1,8 @@
 <?php
 namespace debmlist;
+use \aufschlagwechsel\bup\tde_utils;
+use \aufschlagwechsel\bup\http_utils;
+
 require('utils.php');
 utils\setup_error_handler();
 
@@ -59,7 +62,7 @@ function download_league($httpc, $url, $league_key, $use_vrl, $use_hr) {
 	}
 	$teams = \array_map(function($m) {
 		return [
-			'name' => unify_team_name($m['name']),
+			'name' => tde_utils\unify_team_name($m['name']),
 			'team_id' => $m['team_id'],
 		];
 	}, $team_name_m);
@@ -101,12 +104,12 @@ function download_league($httpc, $url, $league_key, $use_vrl, $use_hr) {
 
 	$tms = [];
 	foreach ($matches_m as $m) {
-		$team1_name = unify_team_name($m['name1']);
+		$team1_name = tde_utils\unify_team_name($m['name1']);
 		$team1 = $teams_by_name[$team1_name];
 		if (!$team1) {
 			throw new Exception('Cannot find team ' . $team1_name);
 		}
-		$team2_name = unify_team_name($m['name2']);
+		$team2_name = tde_utils\unify_team_name($m['name2']);
 		$team2 = $teams_by_name[$team2_name];
 		if (!$team2) {
 			throw new Exception('Cannot find team ' . $team2_name);
@@ -128,7 +131,7 @@ function download_league($httpc, $url, $league_key, $use_vrl, $use_hr) {
 	}
 
 	$teams_info = \array_map(function($t) use ($httpc, $tournament_id, $league_key, $use_hr) {
-		$all_players = download_team_vrl(
+		$all_players = tde_utils\download_team_vrl(
 			$httpc, 'www.turnier.de', $tournament_id, $league_key, $t['team_id'], $use_hr);
 
 		return [
@@ -151,9 +154,9 @@ function download_league($httpc, $url, $league_key, $use_vrl, $use_hr) {
 
 function main() {
 	$config = utils\read_config();
-	$httpc = \AbstractHTTPClient::make();
+	$httpc = http_utils\AbstractHTTPClient::make();
 	if ($config['use_cache']) {
-		$httpc = new \CacheHTTPClient($httpc, __DIR__ . '/cache');
+		$httpc = new http_utils\CacheHTTPClient($httpc, __DIR__ . '/cache');
 	}
 
 	$leagues = [];
