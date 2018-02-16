@@ -49,7 +49,7 @@ function geolocate($httpc, $address, $orig_address=null) {
 		'address=' . \urlencode($address) .
 		'&key=' . \urlencode($API_KEY)
 	);
-	$geo = json_decode($geo_json, true);
+	$geo = \json_decode($geo_json, true);
 	$results = $geo['results'];
 	if (\count($results) === 0) {
 		// Try stripping ZIP code
