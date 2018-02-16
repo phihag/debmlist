@@ -23,11 +23,20 @@ function _make_url($page, $tournament_id, $suffix) {
 }
 
 
-function geolocate($httpc, $address) {
+$loc_cache = [];
+function geolocate($httpc, $address, $orig_address=null) {
+	global $loc_cache;
+
+	if ($orig_address == null) {
+		$orig_address = $address;
+	}
+	if (\array_key_exists($orig_address, $loc_cache)) {
+		return $loc_cache[$orig_address];
+	}
+
 	$ADDRESS_ALIAS = [
 		'07749 Jena, Sporthalle des Sportgymnasiums Jena' => 'Jena Wöllnitzer Str. 40',
 	];
-
 	if (\array_key_exists($address, $ADDRESS_ALIAS)) {
 		$address = $ADDRESS_ALIAS[$address];
 	}
@@ -45,22 +54,25 @@ function geolocate($httpc, $address) {
 	if (\count($results) === 0) {
 		// Try stripping ZIP code
 		if (\preg_match('/^[0-9]+\s+(.*)$/', $address, $address_m)) {
-			return geolocate($httpc, $address_m[1]);
+			return geolocate($httpc, $address_m[1], $orig_address);
 		}
 
 		// Try stripping stuff in parens parens
 		if (\preg_match('/^(.*)\(.*$/', $address, $address_m)) {
-			return geolocate($httpc, $address_m[1]);
+			return geolocate($httpc, $address_m[1], $orig_address);
 		}
 
 		// Try stripping location name
 		if (\preg_match('/^([^,]+),.*,([^,]+)$/', $address, $address_m)) {
-			return geolocate($httpc, $address_m[1] . ' ' . $address_m[2]);
+			return geolocate($httpc, $address_m[1] . ' ' . $address_m[2], $orig_address);
 		}
 
 		throw new \Exception('Cannot locate ' . $address);
 	}
-	return $results[0]['geometry']['location'];
+
+	$coords = $results[0]['geometry']['location'];
+	$loc_cache[$orig_address] = $coords;
+	return $coords;
 }
 
 function download_team($httpc, $tournament_id, $team_id, $team_name, $use_vrl) {
