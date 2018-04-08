@@ -17,6 +17,22 @@
 		"league_key": "2BLS-2017",
 		"use_vrl": true,
 		"use_hr": true
+	},
+	{
+		"url": "https://www.turnier.de/sport/draw.aspx?id=107D0FC0-C153-4EAF-A39D-EBAECB424B16&draw=5",
+		"league_key": "1BL-2017",
+		"use_vrl": false,
+		"use_hr": false
+	}, {
+		"url": "https://www.turnier.de/sport/draw.aspx?id=107D0FC0-C153-4EAF-A39D-EBAECB424B16&draw=2",
+		"league_key": "1BL-2017",
+		"use_vrl": true,
+		"use_hr": false
+	}, {
+		"url": "https://www.turnier.de/sport/draw.aspx?id=107D0FC0-C153-4EAF-A39D-EBAECB424B16&draw=3",
+		"league_key": "1BL-2017",
+		"use_vrl": true,
+		"use_hr": false
 	}
 ],
 "shortnames": {
