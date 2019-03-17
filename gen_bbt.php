@@ -55,7 +55,7 @@ function main() {
 		if ($m1['ts'] > $m2['ts']) {
 			return 1;
 		}
-		return 0;
+		return strcmp($m1['team_names'][0], $m2['team_names'][0]);
 	});
 
 	$out_fn = $out_dir . 'bbt_' . $config['key'] . '.json';
