@@ -36,7 +36,7 @@ function main() {
 	}
 
 	$locations_fn = $out_dir . 'locations.json';
-	\file_put_contents($locations_fn, \json_encode($location_coords, \JSON_PRETTY_PRINT));
+	\file_put_contents($locations_fn, \json_encode($location_coords, \JSON_PRETTY_PRINT | \JSON_UNESCAPED_UNICODE));
 	echo 'Wrote ' . $locations_fn . "\n";
 }
 

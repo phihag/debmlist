@@ -26,7 +26,7 @@ function main() {
 	$out_dir = __DIR__ . '/output/';
 	\debmlist\utils\ensure_dir($out_dir);
 	$out_fn = $out_dir . $config['key'] . '.json';
-	$out_json = \json_encode($leagues, \JSON_PRETTY_PRINT);
+	$out_json = \json_encode($leagues, \JSON_PRETTY_PRINT | \JSON_UNESCAPED_UNICODE);
 	\file_put_contents($out_fn, $out_json);
 	echo 'Wrote to ' . $out_fn . "\n";
 }
