@@ -1,4 +1,4 @@
-all: download courtspot miniticker bbt
+all: download courtspot miniticker bbt locations
 
 bup:
 	@test -e ../bup || test -e bup || git clone https://github.com/phihag/bup.git
@@ -15,10 +15,13 @@ miniticker: download
 bbt: download
 	php gen_bbt.php
 
+locations: download
+	php gen_locations.php
+
 clean:
 	rm -rf output
 
 cleanall: clean
 	rm -rf cache
 
-.PHONY: all clean cleanall courtspot download miniticker bbt bup
+.PHONY: all clean cleanall courtspot download miniticker bbt bup locations
