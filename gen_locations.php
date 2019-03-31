@@ -7,6 +7,12 @@ utils\setup_error_handler();
 function main() {
 	$config = utils\read_config();
 
+	$default_fn = __DIR__ . '/default_locations.json';
+	$location_coords = \json_decode(\file_get_contents($default_fn), true, 512, \JSON_THROW_ON_ERROR);
+	if (!$location_coords) {
+		throw new \Exception('Failed to read default locations');
+	}
+
 	$out_dir = __DIR__ . '/output/';
 	$leagues_fn = $out_dir . $config['key'] . '.json';
 	$leagues = \json_decode(\file_get_contents($leagues_fn), true);
@@ -14,7 +20,6 @@ function main() {
 		throw new \Exception('Failed to read leagues');
 	}
 
-	$location_coords = [];
 	foreach ($leagues as $league) {
 		foreach ($league['matches'] as $match) {
 			$location = $match['location'];
