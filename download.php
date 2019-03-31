@@ -19,6 +19,7 @@ require($BUP_LOCATION . 'div/selectevent/league_download.php');
 
 function main() {
 	$config = \debmlist\utils\read_config();
+	$config['cache_dir'] = __DIR__ . '/cache';
 
 	$leagues = league_download\download_leagues($config);
 
