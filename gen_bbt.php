@@ -59,7 +59,7 @@ function main() {
 	});
 
 	$out_fn = $out_dir . 'bbt_' . $config['key'] . '.json';
-	\file_put_contents($out_fn, \json_encode($res, \JSON_PRETTY_PRINT));
+	\file_put_contents($out_fn, \json_encode($res, \JSON_PRETTY_PRINT | \JSON_UNESCAPED_UNICODE));
 	echo 'Wrote ' . $out_fn . "\n";
 }
 
