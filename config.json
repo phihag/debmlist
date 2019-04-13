@@ -29,6 +29,12 @@
 		"league_key": "2BLS-2018",
 		"use_vrl": true,
 		"use_hr": true
+	},
+	{
+		"url": "https://www.turnier.de/sport/draw.aspx?id=93D05E3B-310F-4CD3-871C-13B1014411C2&draw=8",
+		"league_key": "1BL-2018",
+		"use_vrl": true,
+		"use_hr": true
 	}
 ],
 "shortnames": {
