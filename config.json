@@ -2,19 +2,19 @@
 "leagues": [
 	{
 		"url": "https://www.turnier.de/sport/league/draw?id=DCA64B96-526B-415F-831C-0F30E39546BC&draw=1",
-		"league_key": "1BL-2018",
+		"league_key": "1BL-2019",
 		"use_vrl": true,
 		"use_hr": true
 	},
 	{
 		"url": "https://www.turnier.de/sport/league/draw?id=DCA64B96-526B-415F-831C-0F30E39546BC&draw=6",
-		"league_key": "2BLN-2018",
+		"league_key": "2BLN-2019",
 		"use_vrl": true,
 		"use_hr": true
 	},
 	{
 		"url": "https://www.turnier.de/sport/league/draw?id=DCA64B96-526B-415F-831C-0F30E39546BC&draw=7",
-		"league_key": "2BLS-2018",
+		"league_key": "2BLS-2019",
 		"use_vrl": true,
 		"use_hr": true
 	}
