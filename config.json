@@ -2,22 +2,29 @@
 "leagues": [
 	{
 		"url": "https://dbv.turnier.de/sport/league/draw?id=B3510C02-5438-4B68-B55F-4A2B86B6BF26&draw=1",
-		"league_key": "1BL-2019",
+		"league_key": "1BL-2020",
 		"use_vrl": true,
 		"use_hr": true
 	},
 	{
 		"url": "https://dbv.turnier.de/sport/league/draw?id=B3510C02-5438-4B68-B55F-4A2B86B6BF26&draw=6",
-		"league_key": "2BLN-2019",
+		"league_key": "2BLN-2020",
 		"use_vrl": true,
 		"use_hr": true
 	},
 	{
 		"url": "https://dbv.turnier.de/sport/league/draw?id=B3510C02-5438-4B68-B55F-4A2B86B6BF26&draw=7",
-		"league_key": "2BLS-2019",
+		"league_key": "2BLS-2020",
 		"use_vrl": true,
 		"use_hr": true
+	},
+	{
+		"url": "https://dbv.turnier.de/sport/league/draw?id=1EE9AE51-2B4E-41A0-9815-381422DC24EC&draw=3",
+		"league_key": "RLW-2016",
+		"use_vrl": false,
+		"use_hr": true
 	}
+
 ],
 "shortnames": {
 	"TSV Neuhausen-Nymphenburg": "Neuhausen"
