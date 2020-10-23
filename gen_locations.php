@@ -1,13 +1,16 @@
 <?php
 namespace debmlist;
-require('utils.php');
+
+require 'import_bup.php';
+require 'utils.php';
 utils\setup_error_handler();
 
 
 function main() {
+	global $BUP_LOCATION;
 	$config = utils\read_config();
 
-	$default_fn = __DIR__ . '/default_locations.json';
+	$default_fn = $BUP_LOCATION . '/div/selectevent/default_locations.json';
 	$location_coords = \json_decode(\file_get_contents($default_fn), true, 512, \JSON_THROW_ON_ERROR);
 	if (!$location_coords) {
 		throw new \Exception('Failed to read default locations');
