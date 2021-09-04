@@ -1,19 +1,19 @@
 {
 "leagues": [
 	{
-		"url": "https://dbv.turnier.de/sport/league/draw?id=B3510C02-5438-4B68-B55F-4A2B86B6BF26&draw=1",
+		"url": "https://dbv.turnier.de/sport/league/draw?id=8A2F66D9-FDD8-442E-8228-8E5020031E69&draw=1",
 		"league_key": "1BL-2020",
 		"use_vrl": true,
 		"use_hr": true
 	},
 	{
-		"url": "https://dbv.turnier.de/sport/league/draw?id=B3510C02-5438-4B68-B55F-4A2B86B6BF26&draw=6",
+		"url": "https://dbv.turnier.de/sport/league/draw?id=8A2F66D9-FDD8-442E-8228-8E5020031E69&draw=6",
 		"league_key": "2BLN-2020",
 		"use_vrl": true,
 		"use_hr": true
 	},
 	{
-		"url": "https://dbv.turnier.de/sport/league/draw?id=B3510C02-5438-4B68-B55F-4A2B86B6BF26&draw=7",
+		"url": "https://dbv.turnier.de/sport/league/draw?id=8A2F66D9-FDD8-442E-8228-8E5020031E69&draw=7",
 		"league_key": "2BLS-2020",
 		"use_vrl": true,
 		"use_hr": true
