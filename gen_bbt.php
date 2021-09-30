@@ -58,7 +58,7 @@ function main() {
 		return strcmp($m1['team_names'][0], $m2['team_names'][0]);
 	});
 
-	$out_fn = $out_dir . 'bbt_' . $config['key'] . '.json';
+	$out_fn = $out_dir . 'teammatches.json';
 	\file_put_contents($out_fn, \json_encode($res, \JSON_PRETTY_PRINT | \JSON_UNESCAPED_UNICODE));
 	echo 'Wrote ' . $out_fn . "\n";
 }
