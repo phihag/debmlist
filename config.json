@@ -23,6 +23,12 @@
 		"league_key": "RLW-2016",
 		"use_vrl": false,
 		"use_hr": true
+	},
+	{
+		"url": "https://dbv.turnier.de/sport/league/draw?id=89716ADA-A61D-4C6F-ACB2-413D1B253294&draw=6",
+		"league_key": "RLSO-2019",
+		"use_vrl": false,
+		"use_hr": true
 	}
 
 ],
