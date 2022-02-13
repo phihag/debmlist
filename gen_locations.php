@@ -37,6 +37,7 @@ function main() {
 			}
 		}
 	}
+	\ksort($location_coords);
 
 	$locations_fn = $out_dir . 'locations.json';
 	\file_put_contents($locations_fn, \json_encode($location_coords, \JSON_PRETTY_PRINT | \JSON_UNESCAPED_UNICODE));
