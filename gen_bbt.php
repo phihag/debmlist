@@ -24,6 +24,10 @@ function main() {
 		}
 
 		foreach ($league['matches'] as $lmatch) {
+			if (isset($lmatch['cancelled']) && $lmatch['cancelled']) {
+				continue;
+			}
+
 			$teams = \array_map(function($team_id) use ($teams_by_id) {
 				return $teams_by_id[$team_id];
 			}, $lmatch['team_ids']);
