@@ -31,12 +31,8 @@
 		"use_hr": true
 	}
 ],
-"shortnames": {
-	"TSV Neuhausen-Nymphenburg": "Neuhausen"
-},
-"longnames": {
-	"TSV Neuhausen-Nymphenburg": "TSV Neuh.-Nymphenburg"
-},
+"shortnames": {},
+"longnames": {},
 "key": "buli2021",
 "use_cache": true
 }
