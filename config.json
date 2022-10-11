@@ -25,6 +25,12 @@
 		"use_hr": true
 	},
 	{
+		"url": "https://dbv.turnier.de/sport/league/draw?id=EF6900BC-5804-48EE-BF91-A6D3D176D610&draw=10",
+		"league_key": "RLM-2016",
+		"use_vrl": false,
+		"use_hr": true
+	},
+	{
 		"url": "https://dbv.turnier.de/sport/league/draw?id=EF6900BC-5804-48EE-BF91-A6D3D176D610&draw=13",
 		"league_key": "RLSO-2019",
 		"use_vrl": false,
