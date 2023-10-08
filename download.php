@@ -10,6 +10,7 @@ require 'import_bup.php';
 function main() {
 	$config = \debmlist\utils\read_config();
 	$config['cache_dir'] = __DIR__ . '/cache';
+	$config['debug'] = \in_array('--debug', $_SERVER['argv']);
 
 	$leagues = league_download\download_leagues($config);
 
