@@ -31,6 +31,12 @@
 		"use_hr": true
 	},
 	{
+		"url": "https://dbv.turnier.de/sport/league/draw?id=1379A812-6140-4414-A8B2-03AC3627B6E9&draw=8",
+		"league_key": "2BLS-2020",
+		"use_vrl": true,
+		"use_hr": true
+	},
+	{
 		"url": "https://dbv.turnier.de/sport/league/draw?id=E407A865-DE3C-4AE6-950A-B3C4C5503763&draw=1",
 		"league_key": "RLN-2016",
 		"use_vrl": false,
