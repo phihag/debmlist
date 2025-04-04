@@ -19,6 +19,18 @@
 		"use_hr": true
 	},
 	{
+		"url": "https://dbv.turnier.de/sport/league/draw?id=73583FF7-B4C2-403E-940D-75525135D101&draw=3",
+		"league_key": "1BL-2020",
+		"use_vrl": true,
+		"use_hr": true
+	},
+	{
+		"url": "https://dbv.turnier.de/sport/league/draw?id=73583FF7-B4C2-403E-940D-75525135D101&draw=4",
+		"league_key": "1BL-2020",
+		"use_vrl": true,
+		"use_hr": true
+	},
+	{
 		"url": "https://dbv.turnier.de/sport/league/draw?id=DBE48728-6800-4C27-BA1F-0E790784C21C&draw=1",
 		"league_key": "RLN-2016",
 		"use_vrl": false,
