@@ -1,56 +1,38 @@
 {
 "leagues": [
 	{
-		"url": "https://dbv.turnier.de/sport/league/draw?id=73583FF7-B4C2-403E-940D-75525135D101&draw=1",
-		"league_key": "1BL-2020",
-		"use_vrl": true,
-		"use_hr": true
-	},
-	{
-		"url": "https://dbv.turnier.de/sport/league/draw?id=73583FF7-B4C2-403E-940D-75525135D101&draw=6",
-		"league_key": "2BLN-2020",
-		"use_vrl": true,
-		"use_hr": true
-	},
-	{
-		"url": "https://dbv.turnier.de/sport/league/draw?id=73583FF7-B4C2-403E-940D-75525135D101&draw=7",
+		"url": "https://dbv.turnier.de/sport/league/draw?id=6ED2D746-0600-4E30-BA54-F94EB9796B18&draw=1",
 		"league_key": "2BLS-2020",
-		"use_vrl": true,
+		"use_vrl": false,
 		"use_hr": true
 	},
 	{
-		"url": "https://dbv.turnier.de/sport/league/draw?id=73583FF7-B4C2-403E-940D-75525135D101&draw=3",
+		"url": "https://dbv.turnier.de/sport/league/draw?id=6ED2D746-0600-4E30-BA54-F94EB9796B18&draw=5",
 		"league_key": "1BL-2020",
-		"use_vrl": true,
+		"use_vrl": false,
 		"use_hr": true
 	},
 	{
-		"url": "https://dbv.turnier.de/sport/league/draw?id=73583FF7-B4C2-403E-940D-75525135D101&draw=4",
+		"url": "https://dbv.turnier.de/sport/league/draw?id=6ED2D746-0600-4E30-BA54-F94EB9796B18&draw=6",
 		"league_key": "1BL-2020",
-		"use_vrl": true,
+		"use_vrl": false,
 		"use_hr": true
 	},
 	{
-		"url": "https://dbv.turnier.de/sport/league/draw?id=DBE48728-6800-4C27-BA1F-0E790784C21C&draw=1",
+		"url": "https://dbv.turnier.de/sport/league/draw?id=20F9BF22-5F90-44DF-AD12-99E7D286BF4F&draw=1",
 		"league_key": "RLN-2016",
 		"use_vrl": false,
 		"use_hr": true
 	},
 	{
-		"url": "https://dbv.turnier.de/sport/league/draw?id=066F2F48-EF43-47A8-999F-A2021BE81D09&draw=3",
+		"url": "https://dbv.turnier.de/sport/league/draw?id=925D6245-1FA1-496D-9810-1439487E5801&draw=3",
 		"league_key": "RLW-2016",
 		"use_vrl": false,
 		"use_hr": true
 	},
 	{
-		"url": "https://dbv.turnier.de/sport/league/draw?id=DBE48728-6800-4C27-BA1F-0E790784C21C&draw=8",
+		"url": "https://dbv.turnier.de/sport/league/draw?id=20F9BF22-5F90-44DF-AD12-99E7D286BF4F&draw=8",
 		"league_key": "RLM-2016",
-		"use_vrl": false,
-		"use_hr": true
-	},
-	{
-		"url": "https://dbv.turnier.de/sport/league/draw?id=DBE48728-6800-4C27-BA1F-0E790784C21C&draw=11",
-		"league_key": "RLSO-2019",
 		"use_vrl": false,
 		"use_hr": true
 	}
